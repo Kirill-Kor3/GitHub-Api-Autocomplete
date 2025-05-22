@@ -38,67 +38,59 @@ function searchRep() {
 
   const fetchSearch = async (value) => {
     repositoriesList.innerHTML = '';
-    await fetch(`https://api.github.com/search/repositories?q=${value}`)
-      .then((response) => response.json())
-      // .then(data => console.log(data.items))
-      .then((data) => data.items.filter((el, i) => i < 5))
-      .then((res) => {
-        res.forEach((el) => {
-          const repositoriesListLink = createEl(
-            'a',
-            'repositories-list__link',
-            el.name
-          );
-          repositoriesList.append(repositoriesListLink);
-          repositoriesListLink.addEventListener('click', () => {
-            const repositoriesMenuItem = createEl(
-              'div',
-              'repositories__menu-item'
-            );
-            repositoriesMenu.append(repositoriesMenuItem);
+    const response = await fetch(
+      `https://api.github.com/search/repositories?q=${value}`
+    );
+    const data = await response.json();
+    const res = data.items.filter((el, i) => i < 5);
 
-            const repositoriesMenuList = createEl(
-              'ul',
-              'repositories__menu-list'
-            );
-            repositoriesMenuItem.append(repositoriesMenuList);
+    res.forEach((el) => {
+      const repositoriesListLink = createEl(
+        'a',
+        'repositories-list__link',
+        el.name
+      );
+      repositoriesList.append(repositoriesListLink);
+      repositoriesListLink.addEventListener('click', () => {
+        const repositoriesMenuItem = createEl('div', 'repositories__menu-item');
+        repositoriesMenu.append(repositoriesMenuItem);
 
-            const repositoriesMenuItemDelete = createEl(
-              'div',
-              'repositories__menu-item-delete'
-            );
-            repositoriesMenuItem.append(repositoriesMenuItemDelete);
+        const repositoriesMenuList = createEl('ul', 'repositories__menu-list');
+        repositoriesMenuItem.append(repositoriesMenuList);
 
-            const repositoriesMenuListItemName = createEl(
-              'li',
-              'repositories__menu-list-item',
-              `Name: ${el.name}`
-            );
-            const repositoriesMenuListItemOwner = createEl(
-              'li',
-              'repositories__menu-list-item',
-              `Owner: ${el.owner.login}`
-            );
-            const repositoriesMenuListItemStars = createEl(
-              'li',
-              'repositories__menu-list-item',
-              `Stars: ${el.stargazers_count}`
-            );
-            repositoriesMenuList.append(
-              repositoriesMenuListItemName,
-              repositoriesMenuListItemOwner,
-              repositoriesMenuListItemStars
-            );
-            repositoriesMenuItem.addEventListener('click', (e) => {
-              if (
-                e.target.classList.contains('repositories__menu-item-delete')
-              ) {
-                repositoriesMenuItem.remove();
-              }
-            });
-          });
+        const repositoriesMenuItemDelete = createEl(
+          'div',
+          'repositories__menu-item-delete'
+        );
+        repositoriesMenuItem.append(repositoriesMenuItemDelete);
+
+        const repositoriesMenuListItemName = createEl(
+          'li',
+          'repositories__menu-list-item',
+          `Name: ${el.name}`
+        );
+        const repositoriesMenuListItemOwner = createEl(
+          'li',
+          'repositories__menu-list-item',
+          `Owner: ${el.owner.login}`
+        );
+        const repositoriesMenuListItemStars = createEl(
+          'li',
+          'repositories__menu-list-item',
+          `Stars: ${el.stargazers_count}`
+        );
+        repositoriesMenuList.append(
+          repositoriesMenuListItemName,
+          repositoriesMenuListItemOwner,
+          repositoriesMenuListItemStars
+        );
+        repositoriesMenuItem.addEventListener('click', (e) => {
+          if (e.target.classList.contains('repositories__menu-item-delete')) {
+            repositoriesMenuItem.remove();
+          }
         });
       });
+    });
   };
 
   function debounce(cb, ms) {
